@@ -1,0 +1,27 @@
+#!/bin/python3
+
+import sys
+
+rw = 'r'
+if len(sys.argv) > 1:
+	rw = sys.argv[1]
+
+on_list = []
+off_list = []
+
+if rw == 'w':
+	pin = int(sys.argv[2])
+	state = int(sys.argv[3])
+	with open("/dev/gpio_dev", 'w') as f:
+		f.write(f"pin:{pin}, state:{state}\n")
+else:
+	with open("/dev/gpio_dev", 'r') as f:
+		pins_status = int(f.readline())
+	for i in range(0, 32):
+		if(pins_status & 1):
+			on_list.append(i)
+		else:
+			off_list.append(i)
+		pins_status >>= 1
+	print(f"On Pins are: {on_list}")
+	print(f"Off Pins are: {off_list}")
